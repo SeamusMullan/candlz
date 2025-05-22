@@ -22,6 +22,9 @@ data.current(asset, field)
 # Check if data is available
 data.can_trade(asset)
 
+# Check if enough historical data is available
+data.history_available(asset, bar_count)
+
 # Get asset fundamentals (for stocks)
 data.fundamentals(asset, metric)
 
@@ -43,6 +46,9 @@ order_target_percent(asset, percentage)
 
 # Place order to target specific portfolio value
 order_target_value(asset, value)
+
+# Place order for a specific dollar value of an asset
+order_value(asset, value)
 
 # Place a limit order
 limit_order(asset, amount, price)
@@ -85,6 +91,13 @@ data.ATR(asset, window)
 # Volume indicators
 data.OBV(asset, window)
 data.Volume_SMA(asset, window)
+```
+
+### Logging API
+
+```python
+# Log an informational message
+log.info(message)
 ```
 
 ## Example Usage
