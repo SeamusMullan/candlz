@@ -20,11 +20,11 @@ def status():
 @router.get("/info", summary="API Info", description="Returns API version and contact info.")
 def info():
     return {
-        "version": "0.0.1",
-        "description": "Ampere App Backend API",
-        "author": "Your Name",
+        "version": "0.1.0",
+        "description": "Candlz Trading Game Backend API",
+        "author": "Candlz Development Team",
         "contact": {
-            "email": "your_email@example.com"
+            "email": "contact@candlz.game"
         }
     }
     

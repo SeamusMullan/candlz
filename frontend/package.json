@@ -20,12 +20,25 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
-    "electron-updater": "^6.3.9"
+    "electron-updater": "^6.3.9",
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.2.0",
+    "@tanstack/react-query": "^5.62.8",
+    "axios": "^1.7.9",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "recharts": "^2.13.3",
+    "tailwind-merge": "^2.6.0",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.0.0",
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
     "electron": "^35.1.5",
     "electron-builder": "^25.1.8",
     "electron-vite": "^3.1.0",
@@ -33,9 +46,12 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "postcss": "^8.5.2",
     "prettier": "^3.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "tailwindcss": "^3.5.5",
+    "typescript": "^5.7.2",
     "vite": "^6.2.6"
   }
 }
