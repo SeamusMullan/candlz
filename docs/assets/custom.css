@@ -1,0 +1,363 @@
+/* Custom styles for candlz documentation */
+
+:root {
+  /* Primary color: green for candles and money */
+  --theme-color: #4CAF50;
+  --theme-hue: 122;
+  
+  /* Fonts */
+  --base-font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --base-font-size: 16px;
+  --heading-font-family: 'Poppins', var(--base-font-family);
+  --heading-h1-font-weight: 700;
+  
+  /* Cover page */
+  --cover-heading-color: var(--theme-color);
+  --cover-heading-font-weight: 700;
+  --cover-button-background: var(--theme-color);
+  
+  /* Content */
+  --blockquote-border-color: var(--theme-color);
+  --link-color: #2196F3;
+  --link-color--hover: #0D47A1;
+  --heading-h2-border-color: var(--theme-color);
+    /* Code blocks */
+  --code-theme-background: #f8f8f8;
+  --code-inline-background: #f0f0f0;
+  --code-theme-text: #333333;
+  --code-font-family: 'DM Mono', 'Consolas', monospace;
+  
+  /* Tables */
+  --table-head-background: #f0f7f0;
+  --table-row-odd-background: #f9f9f9;
+  --table-cell-border-color: #eaeaea;
+  --table-cell-color: #333333;
+}
+
+/* Money counter animation */
+.money-counter {
+  font-family: 'DM Mono', monospace;
+  font-weight: bold;
+  color: var(--theme-color);
+  text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Trading terminal style for code blocks */
+.trading-terminal pre {
+  background-color: #2b2b2b;
+  color: #f8f8f8;
+  border-radius: 5px;
+  border-top: 20px solid #3c3c3c;
+  position: relative;
+}
+
+.trading-terminal pre::before {
+  content: "• • •";
+  position: absolute;
+  top: -15px;
+  left: 10px;
+  color: #ff605c;
+  font-size: 14px;
+  letter-spacing: 5px;
+}
+
+/* Candlestick chart styling */
+.candlestick-chart {
+  background: #f5f5f5;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Big number animations */
+@keyframes countUp {
+  from { opacity: 0.3; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.big-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--theme-color);
+  animation: countUp 0.5s ease-out;
+}
+
+/* Progression indicators */
+.progression-tier {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.tier-beginner { background-color: #A5D6A7; color: #1B5E20; }
+.tier-trader { background-color: #90CAF9; color: #0D47A1; }
+.tier-investor { background-color: #FFCC80; color: #E65100; }
+.tier-mogul { background-color: #CE93D8; color: #4A148C; }
+.tier-tycoon { background-color: #F48FB1; color: #880E4F; }
+.tier-legend { background-color: #FFD700; color: #3E2723; }
+
+/* Custom alerts */
+.tip-box {
+  padding: 1rem;
+  margin: 1rem 0;
+  border-left: 4px solid var(--theme-color);
+  background-color: #f0f7f0;
+  border-radius: 0 4px 4px 0;
+}
+
+.warning-box {
+  padding: 1rem;
+  margin: 1rem 0;
+  border-left: 4px solid #FFC107;
+  background-color: #FFF8E1;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Typography enhancements */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font-family);
+}
+
+h1 {
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 0.5rem;
+}
+
+h2 {
+  color: var(--theme-color);
+}
+
+/* Button styles */
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background-color: var(--theme-color);
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #388E3C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Responsive design tweaks */
+@media screen and (max-width: 768px) {
+  :root {
+    --base-font-size: 15px;
+  }
+  
+  .big-number {
+    font-size: 2rem;
+  }
+}
+
+/* Code box styling fixes */
+pre {
+  background-color: #2b2b2b !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  margin: 16px 0 !important;
+  overflow: auto;
+}
+
+code {
+  font-family: var(--code-font-family) !important;
+  color: #f8f8f8 !important;
+}
+
+:not(pre) > code {
+  color: #333 !important;
+  background-color: #f0f0f0 !important;
+  padding: 2px 4px !important;
+  border-radius: 4px !important;
+}
+
+/* Syntax highlighting colors */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #8a9ba8 !important;
+}
+
+.token.namespace {
+  opacity: 0.7 !important;
+}
+
+.token.string,
+.token.attr-value {
+  color: #a8ff60 !important;
+}
+
+.token.punctuation {
+  color: #f8f8f8 !important;
+}
+
+.token.operator {
+  color: #e6cd69 !important;
+}
+
+.token.boolean,
+.token.number {
+  color: #ff9d00 !important;
+}
+
+.token.property {
+  color: #6a8759 !important;
+}
+
+.token.tag {
+  color: #79b6f2 !important;
+}
+
+.token.keyword {
+  color: #cc99cd !important;
+}
+
+.token.selector {
+  color: #ffc66d !important;
+}
+
+.token.function {
+  color: #ffb454 !important;
+}
+
+/* Table styling fixes */
+table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 16px 0 !important;
+  border: 1px solid var(--table-cell-border-color) !important;
+  background-color: #ffffff !important;
+}
+
+th {
+  background-color: var(--table-head-background) !important;
+  border: 1px solid var(--table-cell-border-color) !important;
+  padding: 12px !important;
+  text-align: left !important;
+  font-weight: bold !important;
+  color: #333333 !important;
+}
+
+td {
+  border: 1px solid var(--table-cell-border-color) !important;
+  padding: 10px !important;
+  color: #333333 !important;
+}
+
+tr:nth-child(odd) {
+  background-color: var(--table-row-odd-background) !important;
+}
+
+tr:hover {
+  background-color: #e6f7e6 !important;
+}
+
+/* Mermaid diagram styling fixes */
+.mermaid {
+  margin: 24px 0 !important;
+  background-color:rgb(12, 20, 29) !important;
+  padding: 16px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e0e0e0 !important;
+  min-height: 100px !important;
+}
+
+/* Light theme mermaid styling */
+[data-theme="light"] .mermaid .label {
+  color:rgb(111, 111, 111) !important;
+  font-family: var(--base-font-family) !important;
+}
+
+[data-theme="light"] .mermaid .node rect,
+[data-theme="light"] .mermaid .node circle,
+[data-theme="light"] .mermaid .node ellipse,
+[data-theme="light"] .mermaid .node polygon,
+[data-theme="light"] .mermaid .node path {
+  fill: #e8f5e9 !important;
+  stroke: #4CAF50 !important;
+}
+
+[data-theme="light"] .mermaid .cluster rect,
+[data-theme="light"] .mermaid .cluster path {
+  fill: #f1f8e9 !important;
+  stroke: #AED581 !important;
+}
+
+/* Dark theme mermaid styling */
+[data-theme="dark"] .mermaid .label {
+  color: #e0e0e0 !important;
+  font-family: var(--base-font-family) !important;
+}
+
+[data-theme="dark"] .mermaid .node rect,
+[data-theme="dark"] .mermaid .node circle,
+[data-theme="dark"] .mermaid .node ellipse,
+[data-theme="dark"] .mermaid .node polygon,
+[data-theme="dark"] .mermaid .node path {
+  fill: #1b5e20 !important;
+  stroke: #4CAF50 !important;
+}
+
+[data-theme="dark"] .mermaid .cluster rect,
+[data-theme="dark"] .mermaid .cluster path {
+  fill: #1b5e20 !important;
+  stroke: #2E7D32 !important;
+}
+
+/* Sequence diagram specific styling */
+[data-theme="light"] .mermaid .actor {
+  fill: #e8f5e9 !important;
+  stroke: #4CAF50 !important;
+}
+
+[data-theme="dark"] .mermaid .actor {
+  fill: #1b5e20 !important;
+  stroke: #4CAF50 !important;
+}
+
+[data-theme="light"] .mermaid .messageText {
+  fill:rgb(138, 138, 138) !important;
+  stroke: none !important;
+}
+
+[data-theme="dark"] .mermaid .messageText {
+  fill: #e0e0e0 !important;
+  stroke: none !important;
+}
+
+.mermaid .sequenceNumber {
+  fill: white !important;
+}
+
+[data-theme="light"] .mermaid .loopLine {
+  stroke:rgb(179, 179, 179) !important;
+}
+
+[data-theme="dark"] .mermaid .loopLine {
+  stroke: #a0a0a0 !important;
+}
+
+[data-theme="light"] .mermaid .loopText, 
+[data-theme="light"] .mermaid .noteText {
+  fill: #333333 !important;
+}
+
+[data-theme="dark"] .mermaid .loopText, 
+[data-theme="dark"] .mermaid .noteText {
+  fill: #e0e0e0 !important;
+}
+
+.mermaid .note {
+  fill: #fff8dc !important;
+  stroke: #f9a825 !important;
+}

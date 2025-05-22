@@ -1,0 +1,18 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Candle -->
+  <rect x="80" y="40" width="40" height="120" fill="#4CAF50" rx="2" ry="2" />
+  <!-- Wick -->
+  <line x1="100" y1="20" x2="100" y2="40" stroke="#333" stroke-width="4" />
+  <!-- Flame -->
+  <path d="M100,20 Q90,5 100,-5 Q110,5 100,20" fill="#FF9800" />
+  <!-- Candle shadow -->
+  <rect x="75" y="160" width="50" height="10" fill="#333" rx="5" ry="5" opacity="0.3" />
+  <!-- Money symbols around the candle -->
+  <text x="40" y="70" font-family="Arial" font-size="22" fill="#FF5722" font-weight="bold">$</text>
+  <text x="150" y="100" font-family="Arial" font-size="22" fill="#2196F3" font-weight="bold">$</text>
+  <text x="60" y="140" font-family="Arial" font-size="22" fill="#9C27B0" font-weight="bold">$</text>
+  <text x="140" y="60" font-family="Arial" font-size="22" fill="#FF9800" font-weight="bold">$</text>
+  <text x="40" y="110" font-family="Arial" font-size="22" fill="#E91E63" font-weight="bold">$</text>
+  <!-- Trending arrow -->
+  <path d="M160,140 L180,120 L175,120 L175,100 L145,100 L145,120 L140,120 Z" fill="#4CAF50" />
+</svg>

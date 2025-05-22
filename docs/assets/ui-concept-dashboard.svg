@@ -1,0 +1,84 @@
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#1E1E2E" rx="5" ry="5"/>
+  
+  <!-- Header -->
+  <rect width="800" height="50" fill="#252538" rx="5" ry="5"/>
+  <text x="20" y="30" font-family="Arial" font-size="18" fill="#4CAF50" font-weight="bold">candlz</text>
+  <text x="150" y="30" font-family="Arial" font-size="14" fill="#AAAAAA">Dashboard</text>
+  <text x="250" y="30" font-family="Arial" font-size="14" fill="#AAAAAA">Markets</text>
+  <text x="350" y="30" font-family="Arial" font-size="14" fill="#AAAAAA">Algorithms</text>
+  <text x="450" y="30" font-family="Arial" font-size="14" fill="#AAAAAA">Analytics</text>
+  
+  <!-- Portfolio Value -->
+  <rect x="20" y="70" width="760" height="80" fill="#252538" rx="5" ry="5"/>
+  <text x="40" y="100" font-family="Arial" font-size="14" fill="#AAAAAA">Portfolio Value</text>
+  <text x="40" y="130" font-family="Arial" font-size="28" fill="#4CAF50" font-weight="bold">$1,456,789.23</text>
+  <text x="300" y="100" font-family="Arial" font-size="14" fill="#AAAAAA">Daily Change</text>
+  <text x="300" y="130" font-family="Arial" font-size="24" fill="#4CAF50" font-weight="bold">+$23,456.78 (+1.64%)</text>
+  <text x="560" y="100" font-family="Arial" font-size="14" fill="#AAAAAA">All-Time Profit</text>
+  <text x="560" y="130" font-family="Arial" font-size="24" fill="#4CAF50" font-weight="bold">+$1,356,789.23</text>
+  
+  <!-- Main content grid -->
+  <rect x="20" y="170" width="500" height="310" fill="#252538" rx="5" ry="5"/>
+  
+  <!-- Chart -->
+  <rect x="30" y="180" width="480" height="250" fill="#1A1A2A" rx="3" ry="3"/>
+  <polyline points="30,350 50,330 70,340 90,320 110,325 130,290 150,310 170,280 190,270 210,280 230,260 250,255 270,240 290,230 310,235 330,210 350,200 370,190 390,170 410,180 430,160 450,155 470,150 490,140 510,130" stroke="#4CAF50" stroke-width="2" fill="none"/>
+  <path d="M30,350 L50,330 L70,340 L90,320 L110,325 L130,290 L150,310 L170,280 L190,270 L210,280 L230,260 L250,255 L270,240 L290,230 L310,235 L330,210 L350,200 L370,190 L390,170 L410,180 L430,160 L450,155 L470,150 L490,140 L510,130 L510,350 Z" fill="url(#grad1)" opacity="0.3"/>
+  
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Chart controls -->
+  <rect x="30" y="440" width="480" height="30" fill="#1A1A2A" rx="3" ry="3"/>
+  <text x="40" y="460" font-family="Arial" font-size="12" fill="#AAAAAA">1D</text>
+  <text x="70" y="460" font-family="Arial" font-size="12" fill="#FFFFFF" font-weight="bold">1W</text>
+  <text x="100" y="460" font-family="Arial" font-size="12" fill="#AAAAAA">1M</text>
+  <text x="130" y="460" font-family="Arial" font-size="12" fill="#AAAAAA">3M</text>
+  <text x="160" y="460" font-family="Arial" font-size="12" fill="#AAAAAA">1Y</text>
+  <text x="190" y="460" font-family="Arial" font-size="12" fill="#AAAAAA">All</text>
+  
+  <!-- Right sidebar -->
+  <rect x="540" y="170" width="240" height="310" fill="#252538" rx="5" ry="5"/>
+  
+  <!-- Holdings -->
+  <text x="555" y="190" font-family="Arial" font-size="16" fill="#FFFFFF" font-weight="bold">Holdings</text>
+  
+  <!-- Asset 1 -->
+  <rect x="555" y="210" width="210" height="40" fill="#1A1A2A" rx="3" ry="3"/>
+  <text x="565" y="230" font-family="Arial" font-size="14" fill="#FFFFFF">AAPL</text>
+  <text x="565" y="245" font-family="Arial" font-size="12" fill="#AAAAAA">100 shares</text>
+  <text x="700" y="230" font-family="Arial" font-size="14" fill="#4CAF50" text-anchor="end">$18,725.00</text>
+  <text x="700" y="245" font-family="Arial" font-size="12" fill="#4CAF50" text-anchor="end">+2.4%</text>
+  
+  <!-- Asset 2 -->
+  <rect x="555" y="260" width="210" height="40" fill="#1A1A2A" rx="3" ry="3"/>
+  <text x="565" y="280" font-family="Arial" font-size="14" fill="#FFFFFF">BTC</text>
+  <text x="565" y="295" font-family="Arial" font-size="12" fill="#AAAAAA">2.5 coins</text>
+  <text x="700" y="280" font-family="Arial" font-size="14" fill="#4CAF50" text-anchor="end">$120,625.00</text>
+  <text x="700" y="295" font-family="Arial" font-size="12" fill="#4CAF50" text-anchor="end">+3.1%</text>
+  
+  <!-- Asset 3 -->
+  <rect x="555" y="310" width="210" height="40" fill="#1A1A2A" rx="3" ry="3"/>
+  <text x="565" y="330" font-family="Arial" font-size="14" fill="#FFFFFF">TSLA</text>
+  <text x="565" y="345" font-family="Arial" font-size="12" fill="#AAAAAA">50 shares</text>
+  <text x="700" y="330" font-family="Arial" font-size="14" fill="#E57373" text-anchor="end">$15,240.00</text>
+  <text x="700" y="345" font-family="Arial" font-size="12" fill="#E57373" text-anchor="end">-1.2%</text>
+  
+  <!-- Asset 4 -->
+  <rect x="555" y="360" width="210" height="40" fill="#1A1A2A" rx="3" ry="3"/>
+  <text x="565" y="380" font-family="Arial" font-size="14" fill="#FFFFFF">ETH</text>
+  <text x="565" y="395" font-family="Arial" font-size="12" fill="#AAAAAA">10 coins</text>
+  <text x="700" y="380" font-family="Arial" font-size="14" fill="#4CAF50" text-anchor="end">$32,145.00</text>
+  <text x="700" y="395" font-family="Arial" font-size="12" fill="#4CAF50" text-anchor="end">+0.8%</text>
+  
+  <!-- Cash balance -->
+  <rect x="555" y="410" width="210" height="40" fill="#1A1A2A" rx="3" ry="3"/>
+  <text x="565" y="430" font-family="Arial" font-size="14" fill="#FFFFFF" font-weight="bold">Cash Balance</text>
+  <text x="700" y="430" font-family="Arial" font-size="14" fill="#FFFFFF" text-anchor="end" font-weight="bold">$1,270,054.23</text>
+</svg>

@@ -1,0 +1,11 @@
+#codebase 
+
+Make a docsify documentation for the existing docs folder. I am planning the following project.
+
+I want to make a trading game called candlz where players can trade stocks and (crypto)currencies much like the real world with the goal of making the most money possible that they can (with global leaderboards to track this).
+
+The game is built on electron with a frontend but by using fastapi as a locally hosted backend, the game allows players to program their own software to implement into the game and automate their trading, emulating real life HF and Algorithmic trading.
+
+I would love for you to plan out game design documentation and write it to make things easier and faster for me to implement. Focus on highlighting a fun game experience for users. Think big numbers like other games (balatro, cookie clicker, etc) where the sky is the limit. The idea of the game should be money go up, the one fundemental goal of anyone in the markets. make that the byline now that i think of it too.
+
+Hope you can come up with some good stuff for me! thanks :)

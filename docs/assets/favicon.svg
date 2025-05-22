@@ -1,0 +1,13 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simplified candle -->
+  <rect x="12" y="8" width="8" height="18" fill="#4CAF50" rx="1" ry="1" />
+  <!-- Wick -->
+  <line x1="16" y1="4" x2="16" y2="8" stroke="#333" stroke-width="1.5" />
+  <!-- Flame -->
+  <path d="M16,4 Q14,1 16,0 Q18,1 16,4" fill="#FF9800" />
+  <!-- Money symbol -->
+  <text x="9" y="20" font-family="Arial" font-size="7" fill="#FF5722" font-weight="bold">$</text>
+  <text x="20" y="14" font-family="Arial" font-size="7" fill="#2196F3" font-weight="bold">$</text>
+  <!-- Trending arrow -->
+  <path d="M24,24 L28,20 L27,20 L27,16 L21,16 L21,20 L20,20 Z" fill="#4CAF50" />
+</svg>
