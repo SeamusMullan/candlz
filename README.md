@@ -1,4 +1,4 @@
-# candlz - Trading Game
+# candlz
 
 candlz is a trading simulation game where players can trade stocks and cryptocurrencies with the goal of making as much money as possible and climbing global leaderboards.
 
@@ -10,7 +10,11 @@ candlz is a trading simulation game where players can trade stocks and cryptocur
 - **Wealth Progression**: Grow your portfolio from thousands to billions
 - **Cross-Platform**: Built on Electron and FastAPI
 
-## Getting Started
+## Installation
+
+Game aint finished....yet
+
+## (Development) Getting Started
 
 ### Prerequisites
 
