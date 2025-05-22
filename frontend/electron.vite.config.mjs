@@ -12,9 +12,18 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
+        '@renderer': resolve('src/renderer/src'),
+        '@': resolve('src/renderer/src'),
+        '@/components': resolve('src/renderer/src/components'),
+        '@/hooks': resolve('src/renderer/src/hooks'),
+        '@/lib': resolve('src/renderer/src/lib'),
+        '@/types': resolve('src/renderer/src/types'),
+        '@/store': resolve('src/renderer/src/store')
       }
     },
-    plugins: [react()]
+    plugins: [react()],
+    css: {
+      postcss: './postcss.config.js'
+    }
   }
 })

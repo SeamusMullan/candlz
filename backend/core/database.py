@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
@@ -76,17 +76,21 @@ class DatabaseManager:
         """Get a new database session."""
         return self.SessionLocal()
     
-    def execute_query(self, query: str, params: dict = None) -> list:
-        """Execute raw SQL query and return results."""
+    from typing import Optional
+
+    from sqlalchemy import text
+
+    def execute_query(self, query: str, params: Optional[dict] = None) -> list:
+        """Execute raw SQL query and return results as list of dicts."""
         with self.get_session() as session:
-            result = session.execute(query, params or {})
-            return result.fetchall()
+            result = session.execute(text(query), params or {})
+            return [dict(row._mapping) for row in result.fetchall()]
     
     def health_check(self) -> bool:
         """Check if database connection is healthy."""
         try:
             with self.get_session() as session:
-                session.execute("SELECT 1")
+                session.execute(text("SELECT 1"))
                 return True
         except Exception:
             return False
@@ -98,28 +102,30 @@ class DatabaseManager:
                 if DATABASE_URL.startswith("sqlite"):
                     # SQLite specific query
                     result = session.execute(
-                        "SELECT name FROM sqlite_master WHERE type='table'"
+                        text("SELECT name FROM sqlite_master WHERE type='table'")
                     )
                     tables = [row[0] for row in result.fetchall()]
                     
                     table_info = {}
                     for table in tables:
-                        count_result = session.execute(f"SELECT COUNT(*) FROM {table}")
-                        count = count_result.fetchone()[0]
+                        count_result = session.execute(text(f"SELECT COUNT(*) FROM {table}"))
+                        row = count_result.fetchone()
+                        count = row[0] if row is not None else 0
                         table_info[table] = {"row_count": count}
                     
                     return table_info
                 else:
                     # PostgreSQL or other databases
                     result = session.execute(
-                        "SELECT table_name FROM information_schema.tables WHERE table_schema='public'"
+                        text("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
                     )
                     tables = [row[0] for row in result.fetchall()]
                     
                     table_info = {}
                     for table in tables:
-                        count_result = session.execute(f"SELECT COUNT(*) FROM {table}")
-                        count = count_result.fetchone()[0]
+                        count_result = session.execute(text(f"SELECT COUNT(*) FROM {table}"))
+                        row = count_result.fetchone()
+                        count = row[0] if row is not None else 0
                         table_info[table] = {"row_count": count}
                     
                     return table_info
