@@ -39,7 +39,7 @@ sudo apt install candlz-desktop
 When you first launch candlz, you'll be guided through a setup wizard:
 
 1. **Create Account**: Choose a username for the leaderboards
-2. **Select Difficulty**: 
+2. **Select Difficulty**:
    - **Casual**: Start with $100,000 and reduced market volatility
    - **Standard**: Start with $50,000 and normal market conditions
    - **Hardcore**: Start with $10,000 and increased volatility
@@ -69,7 +69,11 @@ The main trading interface consists of:
 1. Navigate to the "Algorithm Lab" section
 2. Click "New Algorithm" to open the code editor
 3. Choose a template or start from scratch
-4. Use our Python API to define your trading strategy:
+4. Use our Python API to define your trading strategy
+5. Test your algorithm in the sandbox with historical data
+6. Once satisfied, deploy it to trade with virtual funds
+
+Look at some sample python code for our API
 
 ```python
 from candlz.api import Market, Portfolio, Order
@@ -99,9 +103,6 @@ def run(market, portfolio):
 def calculate_sma(prices, window):
     return sum(prices[-window:]) / window
 ```
-
-5. Test your algorithm in the sandbox with historical data
-6. Once satisfied, deploy it to trade with virtual funds
 
 ## Next Steps
 

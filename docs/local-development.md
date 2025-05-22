@@ -25,13 +25,13 @@ python -m http.server 3000
 python -m SimpleHTTPServer 3000
 ```
 
-Then open your browser and go to http://localhost:3000
+Then open your browser and go to <http://localhost:3000>
 
 ## Option 2: Using Docsify CLI (Recommended)
 
 The Docsify CLI provides live reloading and other development features:
 
-### Installation
+### Docs Setup
 
 ```bash
 # Install docsify-cli globally
@@ -48,7 +48,7 @@ cd /path/to/candlz
 docsify serve docs
 ```
 
-By default, the site will be available at http://localhost:3000
+By default, the site will be available at <http://localhost:3000>
 
 ### Additional Docsify Commands
 
@@ -81,14 +81,14 @@ cd docs
 http-server -p 3000
 ```
 
-Then open your browser and go to http://localhost:3000
+Then open your browser and go to <http://localhost:3000>
 
 ## Viewing the Documentation
 
 After starting your local server using any of the methods above:
 
 1. Open your web browser
-2. Navigate to http://localhost:3000 (or whatever port you specified)
+2. Navigate to <http://localhost:3000> (or whatever port you specified)
 3. You should see the candlz documentation site
 
 ## Troubleshooting
@@ -97,7 +97,7 @@ After starting your local server using any of the methods above:
 
 If you encounter CORS (Cross-Origin Resource Sharing) issues:
 
-- Make sure you're accessing the site via http://localhost and not via IP address
+- Make sure you're accessing the site via <http://localhost> and not via IP address
 - Use a server that sets proper CORS headers
 - Try a different browser
 

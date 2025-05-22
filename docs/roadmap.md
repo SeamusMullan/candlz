@@ -270,7 +270,7 @@ We value your input on this roadmap! To provide feedback:
 - Join our Discord community
 - Submit issues on GitHub
 - Participate in our feedback forums
-- Contact us directly at feedback@candlz.com
+- Contact us directly at <feedback@candlz.com>
 
 ---
 
