@@ -14,12 +14,31 @@ const sizeClasses = {
 
 export default function LoadingSpinner({ size = 'md', className }: LoadingSpinnerProps) {
   return (
-    <div
+    <svg
       className={cn(
-        'animate-spin rounded-full border-2 border-gray-300 border-t-primary-600',
+        'animate-spin',
         sizeClasses[size],
         className
       )}
-    />
+      viewBox="0 0 24 24"
+      fill="none"
+      role="status"
+      aria-label="Loading"
+    >
+      <circle
+        className="opacity-25 stroke-current text-gray-300"
+        cx="12"
+        cy="12"
+        r="10"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75 stroke-current text-primary-600"
+        fill="none"
+        strokeWidth="4"
+        strokeLinecap="round"
+        d="M12 2a10 10 0 0 1 10 10"
+      />
+    </svg>
   );
 }

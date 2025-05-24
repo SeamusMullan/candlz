@@ -74,20 +74,150 @@ export function formatPriceChange(value: string | number): {
   };
 }
 
+// Wealth tier configuration
+export const WEALTH_TIERS = {
+  retail_trader: {
+    name: 'Retail Trader',
+    minValue: 0,
+    maxValue: 50000,
+    icon: '👤',
+    color: 'text-gray-600',
+    bgColor: 'bg-gray-100',
+    description: 'Starting your trading journey'
+  },
+  active_trader: {
+    name: 'Active Trader',
+    minValue: 50000,
+    maxValue: 200000,
+    icon: '📱',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-100',
+    description: 'Building consistent trading habits'
+  },
+  small_fund: {
+    name: 'Small Fund',
+    minValue: 200000,
+    maxValue: 1000000,
+    icon: '🏢',
+    color: 'text-green-600',
+    bgColor: 'bg-green-100',
+    description: 'Managing substantial capital'
+  },
+  hedge_fund: {
+    name: 'Hedge Fund',
+    minValue: 1000000,
+    maxValue: 10000000,
+    icon: '🏦',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-100',
+    description: 'Professional fund management'
+  },
+  institution: {
+    name: 'Institution',
+    minValue: 10000000,
+    maxValue: 100000000,
+    icon: '🏛️',
+    color: 'text-indigo-600',
+    bgColor: 'bg-indigo-100',
+    description: 'Institutional-level trading'
+  },
+  billionaire: {
+    name: 'Billionaire',
+    minValue: 100000000,
+    maxValue: 1000000000,
+    icon: '💎',
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-100',
+    description: 'Elite wealth status'
+  },
+  market_maker: {
+    name: 'Market Maker',
+    minValue: 1000000000,
+    maxValue: 10000000000,
+    icon: '⚡',
+    color: 'text-orange-600',
+    bgColor: 'bg-orange-100',
+    description: 'Shaping market dynamics'
+  },
+  market_god: {
+    name: 'Market God',
+    minValue: 10000000000,
+    maxValue: Infinity,
+    icon: '👑',
+    color: 'text-pink-600',
+    bgColor: 'bg-pink-100',
+    description: 'Ultimate trading mastery'
+  }
+};
+
+// Get wealth tier from portfolio value
+export function getWealthTierFromValue(portfolioValue: number): string {
+  const tiers = Object.entries(WEALTH_TIERS);
+  
+  for (const [tierKey, tierInfo] of tiers) {
+    if (portfolioValue >= tierInfo.minValue && portfolioValue < tierInfo.maxValue) {
+      return tierKey;
+    }
+  }
+  
+  return 'market_god'; // Default to highest tier if value exceeds all thresholds
+}
+
+// Get next wealth tier
+export function getNextWealthTier(currentTier: string): string | null {
+  const tierKeys = Object.keys(WEALTH_TIERS);
+  const currentIndex = tierKeys.indexOf(currentTier);
+  
+  if (currentIndex === -1 || currentIndex === tierKeys.length - 1) {
+    return null; // Already at max tier or tier not found
+  }
+  
+  return tierKeys[currentIndex + 1];
+}
+
+// Calculate progress to next tier
+export function getWealthTierProgress(portfolioValue: number, currentTier: string): {
+  progress: number;
+  nextTier: string | null;
+  amountNeeded: number;
+  progressText: string;
+} {
+  const nextTier = getNextWealthTier(currentTier);
+  
+  if (!nextTier) {
+    return {
+      progress: 100,
+      nextTier: null,
+      amountNeeded: 0,
+      progressText: 'MAX TIER ACHIEVED'
+    };
+  }
+  
+  const currentTierInfo = WEALTH_TIERS[currentTier as keyof typeof WEALTH_TIERS];
+  const nextTierInfo = WEALTH_TIERS[nextTier as keyof typeof WEALTH_TIERS];
+  
+  const tierRange = nextTierInfo.minValue - currentTierInfo.minValue;
+  const currentProgress = portfolioValue - currentTierInfo.minValue;
+  const progress = Math.min(100, Math.max(0, (currentProgress / tierRange) * 100));
+  const amountNeeded = Math.max(0, nextTierInfo.minValue - portfolioValue);
+  
+  return {
+    progress,
+    nextTier,
+    amountNeeded,
+    progressText: `${formatCurrency(portfolioValue)} / ${formatCurrency(nextTierInfo.minValue)}`
+  };
+}
+
 // Get wealth tier display name
 export function getWealthTierDisplay(tier: string): string {
-  const tierMap: Record<string, string> = {
-    retail_trader: 'Retail Trader',
-    active_trader: 'Active Trader',
-    small_fund: 'Small Fund',
-    hedge_fund: 'Hedge Fund',
-    institution: 'Institution',
-    billionaire: 'Billionaire',
-    market_maker: 'Market Maker',
-    market_god: 'Market God',
-  };
-  
-  return tierMap[tier] || tier.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const tierInfo = WEALTH_TIERS[tier as keyof typeof WEALTH_TIERS];
+  return tierInfo?.name || tier.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+// Get wealth tier info
+export function getWealthTierInfo(tier: string) {
+  return WEALTH_TIERS[tier as keyof typeof WEALTH_TIERS] || WEALTH_TIERS.retail_trader;
 }
 
 // Get asset type display name and color

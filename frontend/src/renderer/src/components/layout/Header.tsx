@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { formatCurrency, getWealthTierDisplay } from '@/lib/utils';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -106,9 +107,7 @@ export default function Header() {
           {/* User Menu */}
           <div className="border-l border-gray-300 pl-6 relative">
             <div className="flex items-center space-x-2">
-              <button className="btn btn-ghost btn-sm">
-                ⚙️
-              </button>
+              <ThemeToggle />
               <button className="btn btn-ghost btn-sm">
                 🔔
               </button>

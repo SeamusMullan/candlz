@@ -1,5 +1,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useGameStore } from '@/store/gameStore';
+import { OrderStatus } from '@/types/api';
+import { getWealthTierInfo, getWealthTierProgress, formatCurrency } from '@/lib/utils';
 
 type DashboardView = 'overview' | 'market' | 'trading' | 'orders' | 'stats';
 
@@ -49,6 +52,27 @@ const navItems: NavItem[] = [
 ];
 
 export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
+  const orders = useGameStore(state => state.orders);
+  const portfolio = useGameStore(state => state.portfolio);
+  const currentPlayer = useGameStore(state => state.currentPlayer);
+  
+  // Calculate active orders (pending and partially filled)
+  const activeOrdersCount = orders.filter(order => 
+    order.status === OrderStatus.PENDING || 
+    order.status === OrderStatus.PARTIALLY_FILLED
+  ).length;
+  
+  // Calculate assets owned (positions with quantity > 0)
+  const assetsOwnedCount = portfolio?.positions?.filter(position => 
+    parseFloat(position.quantity) > 0
+  ).length || 0;
+
+  // Wealth tier progression
+  const portfolioValue = parseFloat(portfolio?.total_value || currentPlayer?.current_portfolio_value || '0');
+  const currentTier = currentPlayer?.wealth_tier || 'retail_trader';
+  const tierInfo = getWealthTierInfo(currentTier);
+  const tierProgress = getWealthTierProgress(portfolioValue, currentTier);
+
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 pt-20 z-40 hidden lg:block">
       <nav className="px-4 py-6">
@@ -80,20 +104,70 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
         <div className="mt-8 pt-8 border-t border-gray-200">
           <h3 className="text-sm font-medium text-gray-900 mb-4">Quick Stats</h3>
           <div className="space-y-3">
-            <div className="flex justify-between text-sm">
+            <div 
+              className="flex justify-between text-sm cursor-help" 
+              title="Game markets operate 24/7 for continuous trading"
+            >
               <span className="text-gray-600">Markets Open</span>
               <span className="text-green-600 font-medium">24/7</span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div 
+              className="flex justify-between text-sm cursor-help" 
+              title={`You have ${activeOrdersCount} active orders (pending or partially filled)`}
+            >
               <span className="text-gray-600">Active Orders</span>
-              <span className="text-gray-900 font-medium">-</span>
+              <span className={`font-medium ${activeOrdersCount > 0 ? 'text-blue-600' : 'text-gray-900'}`}>
+                {activeOrdersCount}
+              </span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div 
+              className="flex justify-between text-sm cursor-help" 
+              title={`You own ${assetsOwnedCount} different assets with positions > 0`}
+            >
               <span className="text-gray-600">Assets Owned</span>
-              <span className="text-gray-900 font-medium">-</span>
+              <span className={`font-medium ${assetsOwnedCount > 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                {assetsOwnedCount}
+              </span>
             </div>
           </div>
         </div>
+
+        {/* Wealth Tier Progress */}
+        {currentPlayer && (
+          <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
+            <div className="flex items-center space-x-2 mb-3">
+              <span className="text-lg">{tierInfo.icon}</span>
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-gray-900">{tierInfo.name}</h4>
+                <p className="text-xs text-gray-600">{tierInfo.description}</p>
+              </div>
+            </div>
+            
+            {tierProgress.nextTier && (
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-600">Progress to next tier</span>
+                  <span className="text-gray-900 font-medium">{tierProgress.progress.toFixed(1)}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div 
+                    className="bg-purple-600 h-1.5 rounded-full transition-all duration-500" 
+                    style={{ width: `${tierProgress.progress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-gray-600">
+                  {formatCurrency(tierProgress.amountNeeded)} needed for {getWealthTierInfo(tierProgress.nextTier).name}
+                </p>
+              </div>
+            )}
+            
+            {!tierProgress.nextTier && (
+              <div className="text-center">
+                <span className="text-xs font-medium text-purple-600">👑 MAX TIER ACHIEVED</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Market Status */}
         <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">

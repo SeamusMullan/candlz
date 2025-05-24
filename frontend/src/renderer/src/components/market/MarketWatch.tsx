@@ -13,7 +13,7 @@ export default function MarketWatch({ expanded = false }: MarketWatchProps) {
   const [selectedAssetType, setSelectedAssetType] = useState<AssetType | 'all'>('all');
   const setSelectedAsset = useGameStore(state => state.setSelectedAsset);
   
-  const { data: assets, isLoading } = useAssets({
+  const { data: assets, isLoading, error } = useAssets({
     asset_type: selectedAssetType === 'all' ? undefined : selectedAssetType,
     active_only: true,
   });
@@ -60,6 +60,22 @@ export default function MarketWatch({ expanded = false }: MarketWatchProps) {
         {isLoading ? (
           <div className="flex items-center justify-center h-32">
             <LoadingSpinner />
+          </div>
+        ) : error ? (
+          <div className="text-center py-8">
+            <div className="bg-red-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+              <span className="text-red-600 text-xl">⚠️</span>
+            </div>
+            <h4 className="font-medium text-gray-900 mb-2">Failed to Load Market Data</h4>
+            <p className="text-sm text-gray-600 mb-4">
+              Unable to fetch current market prices. Please try again.
+            </p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="btn btn-secondary btn-sm"
+            >
+              Retry
+            </button>
           </div>
         ) : (
           <>

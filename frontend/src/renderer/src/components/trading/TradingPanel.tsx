@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useCreateOrder, useSimulateOrder } from '@/hooks/useAPI';
-import { OrderType, OrderSide } from '@/types/api';
-import { formatCurrency, validateTradeInput } from '@/lib/utils';
+import { OrderType, OrderSide, OrderStatus } from '@/types/api';
+import { formatCurrency, validateTradeInput, getOrderStatusColor, timeAgo } from '@/lib/utils';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 interface TradingPanelProps {
@@ -13,6 +13,7 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
   const selectedAsset = useGameStore(state => state.selectedAsset);
   const currentPlayer = useGameStore(state => state.currentPlayer);
   const portfolio = useGameStore(state => state.portfolio);
+  const orders = useGameStore(state => state.orders);
   
   const [orderType, setOrderType] = useState<OrderType>(OrderType.MARKET);
   const [orderSide, setOrderSide] = useState<OrderSide>(OrderSide.BUY);
@@ -32,11 +33,17 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
   const availableQuantity = position?.quantity || '0';
 
   const handleSimulate = async () => {
-    if (!selectedAsset) return;
+    if (!selectedAsset) {
+      setErrors({ submit: 'Please select an asset to trade' });
+      return;
+    }
 
+    setErrors({}); // Clear previous errors
+
+    // Enhanced validation
     const validation = validateTradeInput(
       quantity,
-      orderType === OrderType.MARKET ? undefined : price,
+      orderType === OrderType.MARKET ? selectedAsset.current_price : price,
       cashBalance,
       orderSide,
       orderSide === OrderSide.SELL ? availableQuantity : undefined
@@ -44,6 +51,27 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
 
     if (!validation.isValid) {
       setErrors({ quantity: validation.error || 'Invalid input' });
+      return;
+    }
+
+    // Additional validations
+    if (!quantity || quantity.trim() === '') {
+      setErrors({ quantity: 'Quantity is required' });
+      return;
+    }
+
+    if (orderType === OrderType.LIMIT && (!price || price.trim() === '')) {
+      setErrors({ price: 'Limit price is required for limit orders' });
+      return;
+    }
+
+    if (parseFloat(quantity) <= 0) {
+      setErrors({ quantity: 'Quantity must be greater than 0' });
+      return;
+    }
+
+    if (orderType === OrderType.LIMIT && parseFloat(price) <= 0) {
+      setErrors({ price: 'Price must be greater than 0' });
       return;
     }
 
@@ -62,6 +90,9 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
       });
 
       console.log('Order simulation:', simulation);
+      
+      // Show success feedback for simulation
+      setErrors({ success: 'Simulation completed successfully' });
     } catch (error) {
       setErrors({ submit: error instanceof Error ? error.message : 'Simulation failed' });
     }
@@ -76,9 +107,10 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
       return;
     }
 
+    // Enhanced validation
     const validation = validateTradeInput(
       quantity,
-      orderType === OrderType.MARKET ? undefined : price,
+      orderType === OrderType.MARKET ? selectedAsset.current_price : price,
       cashBalance,
       orderSide,
       orderSide === OrderSide.SELL ? availableQuantity : undefined
@@ -86,6 +118,27 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
 
     if (!validation.isValid) {
       setErrors({ quantity: validation.error || 'Invalid input' });
+      return;
+    }
+
+    // Additional validations
+    if (!quantity || quantity.trim() === '') {
+      setErrors({ quantity: 'Quantity is required' });
+      return;
+    }
+
+    if (orderType === OrderType.LIMIT && (!price || price.trim() === '')) {
+      setErrors({ price: 'Limit price is required for limit orders' });
+      return;
+    }
+
+    if (parseFloat(quantity) <= 0) {
+      setErrors({ quantity: 'Quantity must be greater than 0' });
+      return;
+    }
+
+    if (orderType === OrderType.LIMIT && parseFloat(price) <= 0) {
+      setErrors({ price: 'Price must be greater than 0' });
       return;
     }
 
@@ -106,7 +159,7 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
       // Reset form on success
       setQuantity('');
       setPrice('');
-      setErrors({});
+      setErrors({ success: 'Order placed successfully!' });
     } catch (error) {
       setErrors({ submit: error instanceof Error ? error.message : 'Order failed' });
     }
@@ -213,8 +266,11 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   placeholder="Enter limit price"
-                  className="input"
+                  className={`input ${errors.price ? 'input-error' : ''}`}
                 />
+                {errors.price && (
+                  <p className="text-sm text-red-600 mt-1">{errors.price}</p>
+                )}
               </div>
             )}
 
@@ -247,7 +303,12 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
               </div>
             )}
 
-            {/* Submit Error */}
+            {/* Success/Error Feedback */}
+            {errors.success && (
+              <div className="alert alert-success">
+                {errors.success}
+              </div>
+            )}
             {errors.submit && (
               <div className="alert alert-error">
                 {errors.submit}
@@ -284,6 +345,49 @@ export default function TradingPanel({ expanded = false }: TradingPanelProps) {
           </form>
         )}
       </div>
+
+      {/* Recent Orders Summary */}
+      {currentPlayer && orders.length > 0 && (
+        <div className="card-footer border-t border-gray-200">
+          <h4 className="text-sm font-medium text-gray-900 mb-3">Recent Orders</h4>
+          <div className="space-y-2 max-h-32 overflow-y-auto">
+            {orders
+              .filter(order => selectedAsset ? order.asset_id === selectedAsset.id : true)
+              .slice(0, 5)
+              .map((order) => (
+                <div
+                  key={order.id}
+                  className="flex items-center justify-between text-xs bg-gray-50 rounded p-2"
+                >
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-2 py-1 rounded-full text-xs ${getOrderStatusColor(order.status)}`}>
+                      {order.status.replace('_', ' ').toUpperCase()}
+                    </span>
+                    <span className={`font-medium ${order.side === OrderSide.BUY ? 'text-green-600' : 'text-red-600'}`}>
+                      {order.side.toUpperCase()}
+                    </span>
+                    <span className="text-gray-600">
+                      {order.quantity} @ {order.price ? formatCurrency(order.price) : 'Market'}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-gray-500">{timeAgo(order.created_at)}</div>
+                    {order.asset && (
+                      <div className="text-gray-600 font-medium">{order.asset.symbol}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+          </div>
+          {orders.length > 5 && (
+            <div className="text-center mt-2">
+              <button className="text-xs text-blue-600 hover:text-blue-800">
+                View all orders →
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {expanded && (
         <div className="card-footer">

@@ -41,7 +41,7 @@ function AppContent() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <LoadingSpinner size="lg" />
+          <LoadingSpinner size="lg" className="custom-spinner"/>
           <p className="mt-4 text-gray-600">Connecting to Candlz...</p>
         </div>
       </div>
