@@ -3,7 +3,16 @@ import { useGameStore } from '@/store/gameStore';
 import api from '@/lib/api';
 import type { PlayerCreate, OrderCreate, AssetType, WealthTier, OrderStatus } from '@/types/api';
 
+/**
+ * API hooks using React Query
+ * Provides data fetching, caching, and mutation logic for the trading game
+ */
+
 // Player hooks
+/**
+ * Fetch player data by ID
+ * @param playerId - The player's unique identifier
+ */
 export function usePlayer(playerId: number) {
   return useQuery({
     queryKey: ['player', playerId],
@@ -141,6 +150,10 @@ export function usePlayerOrders(playerId: number, status?: OrderStatus, limit = 
   });
 }
 
+/**
+ * Create a new trading order
+ * Automatically updates local state and invalidates related queries
+ */
 export function useCreateOrder() {
   const queryClient = useQueryClient();
   const addOrder = useGameStore(state => state.addOrder);
@@ -152,7 +165,7 @@ export function useCreateOrder() {
     onSuccess: (order) => {
       addOrder(order);
       
-      // Invalidate related queries
+      // Invalidate related queries to refresh data
       if (currentPlayer) {
         queryClient.invalidateQueries({ queryKey: ['orders', currentPlayer.id] });
         queryClient.invalidateQueries({ queryKey: ['portfolio', currentPlayer.id] });

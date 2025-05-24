@@ -2,6 +2,11 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { Player, Asset, Portfolio, Order, PortfolioSummary, PlayerStats } from '@/types/api';
 
+/**
+ * Main game state store using Zustand
+ * Manages player data, portfolio, orders, and game state
+ */
+
 interface GameState {
   // Current player
   currentPlayer: Player | null;
