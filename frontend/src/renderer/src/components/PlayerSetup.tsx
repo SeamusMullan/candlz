@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useCreatePlayer, usePlayerByUsername } from '@/hooks/useAPI';
+import { useState } from 'react';
+import { useCreatePlayer } from '@/hooks/useAPI';
 import { useGameStore } from '@/store/gameStore';
 import { formatCurrency } from '@/lib/utils';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -76,44 +76,50 @@ export default function PlayerSetup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gradient mb-2">📈 Candlz</h1>
-          <p className="text-gray-600">
-            Welcome to the incremental trading game
+        <div className="text-center mb-8 fade-in">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 mb-4">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+          <h1 className="text-4xl font-bold text-gradient mb-2">Candlz</h1>
+          <p className="text-gray-600 text-lg">
+            Your incremental trading adventure starts here
           </p>
         </div>
 
         {/* Mode Toggle */}
-        <div className="flex justify-center mb-6">
-          <div className="bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+        <div className="flex justify-center mb-8 slide-in-right">
+          <div className="glass-effect rounded-xl p-1">
             <button
               onClick={() => setMode('login')}
-              className={`px-6 py-2 rounded-md font-medium transition-colors ${
+              className={`px-8 py-3 rounded-lg font-medium transition-all duration-200 ${
                 mode === 'login' 
-                  ? 'bg-primary-600 text-white' 
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-blue-600 text-white shadow-md' 
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
               }`}
             >
-              Login
+              Welcome Back
             </button>
             <button
               onClick={() => setMode('create')}
-              className={`px-6 py-2 rounded-md font-medium transition-colors ${
+              className={`px-8 py-3 rounded-lg font-medium transition-all duration-200 ${
                 mode === 'create' 
-                  ? 'bg-primary-600 text-white' 
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-blue-600 text-white shadow-md' 
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
               }`}
             >
-              Create Account
+              Start Trading
             </button>
           </div>
         </div>
 
         {/* Login/Create Form */}
-        <div className="card">
+        <div className="glass-effect rounded-2xl p-8 space-y-6 fade-in"
+             style={{ animationDelay: '0.2s' }}>
           <div className="card-header">
             <h2 className="card-title">
               {mode === 'login' ? 'Welcome Back!' : 'Create Your Trader Profile'}

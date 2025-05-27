@@ -90,19 +90,89 @@ export function getWealthTierDisplay(tier: string): string {
   return tierMap[tier] || tier.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
-// Get asset type display name and color
-export function getAssetTypeInfo(type: string): { display: string; color: string; icon: string } {
-  const typeMap: Record<string, { display: string; color: string; icon: string }> = {
-    stock: { display: 'Stock', color: 'text-blue-600', icon: '📈' },
-    crypto: { display: 'Crypto', color: 'text-orange-600', icon: '₿' },
-    forex: { display: 'Forex', color: 'text-green-600', icon: '💱' },
-    commodity: { display: 'Commodity', color: 'text-yellow-600', icon: '🏗️' },
-    index: { display: 'Index', color: 'text-purple-600', icon: '📊' },
-    bond: { display: 'Bond', color: 'text-gray-600', icon: '📋' },
-    derivative: { display: 'Derivative', color: 'text-red-600', icon: '🔄' },
+// Get asset type display name and modern styling
+export function getAssetTypeInfo(type: string): { 
+  display: string; 
+  color: string; 
+  icon: string;
+  label: string;
+  badge: string;
+  gradient: string;
+} {
+  const typeMap: Record<string, { 
+    display: string; 
+    color: string; 
+    icon: string;
+    label: string;
+    badge: string;
+    gradient: string;
+  }> = {
+    stock: { 
+      display: 'Stock', 
+      color: 'text-blue-600', 
+      icon: '📈',
+      label: 'Stock',
+      badge: 'bg-blue-100 text-blue-800',
+      gradient: 'from-blue-500 to-blue-600'
+    },
+    crypto: { 
+      display: 'Crypto', 
+      color: 'text-orange-600', 
+      icon: '₿',
+      label: 'Crypto',
+      badge: 'bg-orange-100 text-orange-800',
+      gradient: 'from-orange-500 to-orange-600'
+    },
+    forex: { 
+      display: 'Forex', 
+      color: 'text-emerald-600', 
+      icon: '💱',
+      label: 'Forex',
+      badge: 'bg-emerald-100 text-emerald-800',
+      gradient: 'from-emerald-500 to-emerald-600'
+    },
+    commodity: { 
+      display: 'Commodity', 
+      color: 'text-yellow-600', 
+      icon: '🏗️',
+      label: 'Commodity',
+      badge: 'bg-yellow-100 text-yellow-800',
+      gradient: 'from-yellow-500 to-yellow-600'
+    },
+    index: { 
+      display: 'Index', 
+      color: 'text-purple-600', 
+      icon: '📊',
+      label: 'Index',
+      badge: 'bg-purple-100 text-purple-800',
+      gradient: 'from-purple-500 to-purple-600'
+    },
+    bond: { 
+      display: 'Bond', 
+      color: 'text-gray-600', 
+      icon: '📋',
+      label: 'Bond',
+      badge: 'bg-gray-100 text-gray-800',
+      gradient: 'from-gray-500 to-gray-600'
+    },
+    derivative: { 
+      display: 'Derivative', 
+      color: 'text-red-600', 
+      icon: '🔄',
+      label: 'Derivative',
+      badge: 'bg-red-100 text-red-800',
+      gradient: 'from-red-500 to-red-600'
+    },
   };
   
-  return typeMap[type] || { display: type, color: 'text-gray-600', icon: '❓' };
+  return typeMap[type] || { 
+    display: type, 
+    color: 'text-gray-600', 
+    icon: '❓',
+    label: type,
+    badge: 'bg-gray-100 text-gray-800',
+    gradient: 'from-gray-500 to-gray-600'
+  };
 }
 
 // Get order status color

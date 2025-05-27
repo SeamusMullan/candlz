@@ -7,18 +7,44 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: '#fdf2f8',
-          100: '#fce7f3',
-          200: '#fbcfe8',
-          300: '#f9a8d4',
-          400: '#f472b6',
-          500: '#ec4899',
-          600: '#db2777',
-          700: '#be185d',
-          800: '#9d174d',
-          900: '#831843',
+        // Modern neutral palette
+        background: "hsl(0 0% 100%)",
+        foreground: "hsl(240 10% 3.9%)",
+        border: "hsl(240 5.9% 90%)",
+        
+        // Trading specific colors
+        trading: {
+          buy: {
+            50: '#ecfdf5',
+            100: '#d1fae5',
+            500: '#10b981',
+            600: '#059669',
+            700: '#047857',
+          },
+          sell: {
+            50: '#fef2f2',
+            100: '#fee2e2',
+            500: '#ef4444',
+            600: '#dc2626',
+            700: '#b91c1c',
+          }
         },
+        
+        // Enhanced primary colors
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        
+        // Success colors (emerald)
         success: {
           50: '#ecfdf5',
           100: '#d1fae5',
@@ -31,6 +57,8 @@ export default {
           800: '#065f46',
           900: '#064e3b',
         },
+        
+        // Danger colors (red)
         danger: {
           50: '#fef2f2',
           100: '#fee2e2',
@@ -43,27 +71,74 @@ export default {
           800: '#991b1b',
           900: '#7f1d1d',
         },
-        dark: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-        }
+        
+        // Professional grays
+        gray: {
+          50: '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
+        },
       },
-      fontFamily: {
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
-        'mono': ['JetBrains Mono', 'monospace'],
+      
+      // Enhanced spacing
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '112': '28rem',
+        '128': '32rem',
       },
+      
+      // Better typography
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
+      },
+      
+      // Enhanced shadows
+      boxShadow: {
+        'soft': '0 2px 15px 0 rgba(0, 0, 0, 0.05)',
+        'medium': '0 4px 20px 0 rgba(0, 0, 0, 0.08)',
+        'strong': '0 8px 30px 0 rgba(0, 0, 0, 0.12)',
+      },
+      
+      // Modern border radius
+      borderRadius: {
+        'xl': '0.75rem',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+      },
+      
+      // Animation
       animation: {
-        'pulse-slow': 'pulse 3s infinite',
-        'bounce-light': 'bounce 2s infinite',
+        'fade-in': 'fadeIn 0.3s ease-in-out',
+        'slide-in': 'slideIn 0.3s ease-out',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideIn: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        }
       }
     },
   },
+  plugins: [],
 }
