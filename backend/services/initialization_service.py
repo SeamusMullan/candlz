@@ -4,6 +4,7 @@ from decimal import Decimal
 from typing import List, Dict
 from sqlalchemy.orm import Session
 from core.models import Asset, Achievement, AssetType, WealthTier
+from core.schemas import AssetCreate
 from core.config import settings, constants
 from services.database_service import DatabaseService
 
@@ -62,19 +63,20 @@ class InitializationService:
         
         for stock in stock_data:
             if not self.db_service.get_asset_by_symbol(stock["symbol"]):
-                asset = self.db_service.create_asset({
-                    "symbol": stock["symbol"],
-                    "name": stock["name"],
-                    "asset_type": AssetType.STOCK,
-                    "current_price": stock["price"],
-                    "market_cap": stock["price"] * Decimal(str(random.randint(1000000000, 3000000000))),
-                    "volume_24h": Decimal(str(random.randint(10000000, 100000000))),
-                    "volatility": Decimal("0.02"),
-                    "beta": Decimal(str(round(random.uniform(0.5, 2.0), 2))),
-                    "unlocked_at_tier": WealthTier.RETAIL_TRADER,
-                    "sector": stock["sector"],
-                    "country": "USA"
-                })
+                asset_data = AssetCreate(
+                    symbol=stock["symbol"],
+                    name=stock["name"],
+                    asset_type=AssetType.STOCK,
+                    current_price=stock["price"],
+                    market_cap=stock["price"] * Decimal(str(random.randint(1000000000, 3000000000))),
+                    volume_24h=Decimal(str(random.randint(10000000, 100000000))),
+                    volatility=Decimal("0.02"),
+                    beta=Decimal(str(round(random.uniform(0.5, 2.0), 2))),
+                    unlocked_at_tier=WealthTier.RETAIL_TRADER,
+                    sector=stock["sector"],
+                    country="USA"
+                )
+                asset = self.db_service.create_asset(asset_data)
                 assets_created += 1
         
         # Create cryptocurrencies
@@ -91,18 +93,19 @@ class InitializationService:
         
         for crypto in crypto_data:
             if not self.db_service.get_asset_by_symbol(crypto["symbol"]):
-                asset = self.db_service.create_asset({
-                    "symbol": crypto["symbol"],
-                    "name": crypto["name"],
-                    "asset_type": AssetType.CRYPTO,
-                    "current_price": crypto["price"],
-                    "market_cap": crypto["price"] * Decimal(str(random.randint(1000000, 1000000000))),
-                    "volume_24h": Decimal(str(random.randint(1000000, 50000000))),
-                    "volatility": Decimal("0.05"),
-                    "beta": Decimal("1.5"),
-                    "unlocked_at_tier": WealthTier.ACTIVE_TRADER,
-                    "country": "Global"
-                })
+                asset_data = AssetCreate(
+                    symbol=crypto["symbol"],
+                    name=crypto["name"],
+                    asset_type=AssetType.CRYPTO,
+                    current_price=crypto["price"],
+                    market_cap=crypto["price"] * Decimal(str(random.randint(1000000, 1000000000))),
+                    volume_24h=Decimal(str(random.randint(1000000, 50000000))),
+                    volatility=Decimal("0.05"),
+                    beta=Decimal("1.5"),
+                    unlocked_at_tier=WealthTier.ACTIVE_TRADER,
+                    country="Global"
+                )
+                asset = self.db_service.create_asset(asset_data)
                 assets_created += 1
         
         # Create forex pairs
@@ -118,17 +121,18 @@ class InitializationService:
         
         for forex in forex_data:
             if not self.db_service.get_asset_by_symbol(forex["symbol"]):
-                asset = self.db_service.create_asset({
-                    "symbol": forex["symbol"],
-                    "name": forex["name"],
-                    "asset_type": AssetType.FOREX,
-                    "current_price": forex["price"],
-                    "volume_24h": Decimal(str(random.randint(100000000, 1000000000))),
-                    "volatility": Decimal("0.01"),
-                    "beta": Decimal("0.8"),
-                    "unlocked_at_tier": WealthTier.SMALL_FUND,
-                    "country": "Global"
-                })
+                asset_data = AssetCreate(
+                    symbol=forex["symbol"],
+                    name=forex["name"],
+                    asset_type=AssetType.FOREX,
+                    current_price=forex["price"],
+                    volume_24h=Decimal(str(random.randint(100000000, 1000000000))),
+                    volatility=Decimal("0.01"),
+                    beta=Decimal("0.8"),
+                    unlocked_at_tier=WealthTier.SMALL_FUND,
+                    country="Global"
+                )
+                asset = self.db_service.create_asset(asset_data)
                 assets_created += 1
         
         # Create commodities
@@ -145,17 +149,18 @@ class InitializationService:
         
         for commodity in commodity_data:
             if not self.db_service.get_asset_by_symbol(commodity["symbol"]):
-                asset = self.db_service.create_asset({
-                    "symbol": commodity["symbol"],
-                    "name": commodity["name"],
-                    "asset_type": AssetType.COMMODITY,
-                    "current_price": commodity["price"],
-                    "volume_24h": Decimal(str(random.randint(1000000, 50000000))),
-                    "volatility": Decimal("0.025"),
-                    "beta": Decimal("0.6"),
-                    "unlocked_at_tier": WealthTier.HEDGE_FUND,
-                    "country": "Global"
-                })
+                asset_data = AssetCreate(
+                    symbol=commodity["symbol"],
+                    name=commodity["name"],
+                    asset_type=AssetType.COMMODITY,
+                    current_price=commodity["price"],
+                    volume_24h=Decimal(str(random.randint(1000000, 50000000))),
+                    volatility=Decimal("0.025"),
+                    beta=Decimal("0.6"),
+                    unlocked_at_tier=WealthTier.HEDGE_FUND,
+                    country="Global"
+                )
+                asset = self.db_service.create_asset(asset_data)
                 assets_created += 1
         
         return assets_created
@@ -396,46 +401,62 @@ class InitializationService:
         price_points_created = 0
         
         for asset in assets:
-            current_price = asset.current_price
-            base_volatility = asset.volatility
+            # Extract actual values from SQLAlchemy columns
+            current_price = Decimal(str(getattr(asset, 'current_price', Decimal('100'))))
+            base_volatility = float(getattr(asset, 'volatility', Decimal('0.02')))
+            asset_id = getattr(asset, 'id', None)
+            
+            if asset_id is None:
+                continue
             
             # Generate price history going backwards
             for day in range(days, 0, -1):
                 timestamp = datetime.utcnow() - timedelta(days=day)
                 
                 # Generate realistic OHLCV data
-                daily_change = random.gauss(0, float(base_volatility))
+                daily_change = random.gauss(0, base_volatility)
                 price_mult = Decimal(str(1 + daily_change))
                 
                 open_price = current_price * price_mult
-                close_change = random.gauss(0, float(base_volatility) * 0.5)
+                close_change = random.gauss(0, base_volatility * 0.5)
                 close_price = open_price * Decimal(str(1 + close_change))
                 
-                high_change = abs(random.gauss(0, float(base_volatility) * 0.3))
-                low_change = abs(random.gauss(0, float(base_volatility) * 0.3))
+                high_change = abs(random.gauss(0, base_volatility * 0.3))
+                low_change = abs(random.gauss(0, base_volatility * 0.3))
                 
-                high_price = max(open_price, close_price) * Decimal(str(1 + high_change))
-                low_price = min(open_price, close_price) * Decimal(str(1 - low_change))
+                # Use explicit conversion to Decimal for calculations
+                open_price_val = Decimal(str(open_price))
+                close_price_val = Decimal(str(close_price))
+                
+                # Calculate high and low prices using standard Python min/max
+                if open_price_val > close_price_val:
+                    high_price = open_price_val * Decimal(str(1 + high_change))
+                    low_price = close_price_val * Decimal(str(1 - low_change))
+                else:
+                    high_price = close_price_val * Decimal(str(1 + high_change))
+                    low_price = open_price_val * Decimal(str(1 - low_change))
                 
                 volume = Decimal(str(random.randint(1000000, 10000000)))
                 
                 price_data = {
                     "timestamp": timestamp,
-                    "open_price": open_price,
+                    "open_price": open_price_val,
                     "high_price": high_price,
                     "low_price": low_price,
-                    "close_price": close_price,
+                    "close_price": close_price_val,
                     "volume": volume
                 }
                 
-                self.db_service.add_price_data(asset.id, price_data)
+                self.db_service.add_price_data(asset_id, price_data)
                 price_points_created += 1
                 
                 # Update current_price for next iteration
-                current_price = close_price
+                current_price = close_price_val
             
-            # Update asset's current price to the most recent close
-            asset.current_price = current_price
-            self.db.commit()
-        
+            # Update asset's current price to the most recent close using query update
+            self.db.query(Asset).filter(Asset.id == asset_id).update({
+                'current_price': current_price
+            })
+            
+        self.db.commit()
         return price_points_created

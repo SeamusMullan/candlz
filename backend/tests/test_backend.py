@@ -8,8 +8,9 @@ import sys
 import os
 from pathlib import Path
 
-# Add the current directory to Python path so we can import our modules
-sys.path.insert(0, str(Path(__file__).parent))
+# Add the backend directory (parent of tests) to Python path
+backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, backend_dir)
 
 def test_imports():
     """Test that all core modules can be imported."""
@@ -127,6 +128,12 @@ def test_basic_operations():
         player = db_service.create_player(player_data)
         print(f"  ✅ Created player: {player.username}")
         
+        # Extract player ID safely
+        player_id = getattr(player, 'id', None)
+        if player_id is None:
+            print("  ❌ Failed to get player ID")
+            return False
+        
         # Get an asset to trade
         assets = db_service.get_assets_by_type("stock")
         if not assets:
@@ -136,27 +143,42 @@ def test_basic_operations():
         asset = assets[0]
         print(f"  ✅ Found asset: {asset.symbol}")
         
+        # Extract asset ID safely
+        asset_id = getattr(asset, 'id', None)
+        if asset_id is None:
+            print("  ❌ Failed to get asset ID")
+            return False
+        
         # Create a buy order
         order_data = OrderCreate(
-            asset_id=asset.id,
+            asset_id=asset_id,
             order_type=OrderType.MARKET,
             side=OrderSide.BUY,
-            quantity=Decimal("10.0")
+            quantity=Decimal("10.0"),
+            price=Decimal("10000.00"),
+            stop_price=None
         )
-        order = db_service.create_order(player.id, order_data)
-        print(f"  ✅ Created order: {order.id}")
+        order = db_service.create_order(player_id, order_data)
+        print(f"  ✅ Created order: {getattr(order, 'id', 'unknown')}")
+        
+        # Extract order ID safely
+        order_id = getattr(order, 'id', None)
+        if order_id is None:
+            print("  ❌ Failed to get order ID")
+            return False
         
         # Execute the order
-        executed_order = db_service.execute_order(order.id, asset.current_price)
+        asset_price = getattr(asset, 'current_price', Decimal('100.00'))
+        executed_order = db_service.execute_order(order_id, Decimal(str(asset_price)))
         print(f"  ✅ Executed order: {executed_order.status}")
         
         # Check portfolio
-        portfolio = db_service.get_player_portfolio(player.id)
+        portfolio = db_service.get_player_portfolio(player_id)
         print(f"  ✅ Portfolio has {len(portfolio)} positions")
         
         # Get player stats
-        stats = db_service.get_player_stats(player.id)
-        print(f"  ✅ Player stats: {stats.total_trades} trades")
+        stats = db_service.get_player_stats(player_id)
+        print(f"  ✅ Player stats: {getattr(stats, 'total_trades', 0)} trades")
         
         db.close()
         return True
