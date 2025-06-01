@@ -53,3 +53,11 @@
 - [Local Development](local-development.md)
 - [Contributing](contributing.md)
 - [Roadmap](roadmap.md)
+
+## Planning
+
+- [Planning Overview](planning/README.md)
+- [Roadmap](planning/roadmap.md)
+- [Goals](planning/goals.md)
+- [Sprints](planning/sprints.md)
+- [Kanban Board](planning/kanban.md)
