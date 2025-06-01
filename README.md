@@ -22,18 +22,6 @@ Game aint finished....yet
 - Python 3.11+
 - npm or yarn
 
-### Installation
-
-```bash
-# Install dependencies
-npm run install:all
-
-# Setup Python environment
-cd backend
-uv sync
-uv pip install -r requirements.txt
-```
-
 ### Development
 
 ```bash
@@ -59,11 +47,11 @@ npm install -g docsify-cli
 docsify serve docs
 ```
 
-Then open your browser to http://localhost:3000
+Then open your browser to <http://localhost:3000>
 
 ## Project Structure
 
-```
+```text
 ├── frontend/        # Electron/Vite frontend
 ├── backend/         # Python/FastAPI backend
 ├── docs/            # Game documentation
