@@ -16,6 +16,7 @@ Features:
 
 import asyncio
 import logging
+import math
 import random
 import threading
 from datetime import datetime, timedelta
@@ -44,6 +45,9 @@ try:
     from .market_engine_service import MarketEngineService
 except ImportError:
     MarketEngineService = None
+
+# Import the enhanced random walk simulation
+from ..random_walk import EnhancedRandomWalk, simulate_asset_price_update
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +91,9 @@ class MarketEngineManager:
         
         # Market engine service for price simulation
         self.market_service = MarketEngineService() if MarketEngineService else None
+        
+        # Enhanced random walk simulation
+        self.random_walk = EnhancedRandomWalk()
         
         # Market state tracking
         self.is_running = False
@@ -763,28 +770,41 @@ class MarketEngineManager:
             return tick_results
         
         try:
-            # 1. Update asset prices (if market service available)
-            if self.market_service:
-                try:
-                    # Use market service for realistic price updates
-                    with self.get_db_session() as db:
-                        assets = self.get_active_assets()
+            # 1. Update asset prices using enhanced random walk simulation
+            try:
+                with self.get_db_session() as db:
+                    assets = self.get_active_assets()
+                    
+                    for asset in assets:
+                        asset_id = getattr(asset, 'id', None)
+                        current_price = getattr(asset, 'current_price', None)
+                        asset_type = getattr(asset, 'asset_type', None)
+                        volume_24h = getattr(asset, 'volume_24h', None)
                         
-                        for asset in assets:
-                            asset_id = getattr(asset, 'id', None)
-                            current_price = getattr(asset, 'current_price', None)
+                        if asset_id and current_price and asset_type:
+                            # Use enhanced random walk for realistic price simulation
+                            price_update = simulate_asset_price_update(
+                                asset_id=asset_id,
+                                current_price=current_price,
+                                asset_type=str(asset_type.value) if hasattr(asset_type, 'value') else str(asset_type),
+                                volume=volume_24h
+                            )
                             
-                            if asset_id and current_price:
-                                # Simple price volatility simulation
-                                price_change = float(current_price) * random.uniform(-0.02, 0.02)  # ±2%
-                                new_price = Decimal(str(float(current_price) + price_change))
+                            new_price = price_update['new_price']
+                            generated_volume = price_update['volume_generated']
+                            
+                            # Update the asset price and volume
+                            if self.update_asset_price(asset_id, new_price, generated_volume):
+                                tick_results['prices_updated'] += 1
                                 
-                                if new_price > 0:
-                                    self.update_asset_price(asset_id, new_price)
-                                    tick_results['prices_updated'] += 1
-                                
-                except Exception as e:
-                    tick_results['errors'].append(f"Price update error: {e}")
+                                # Log significant price movements (>5%)
+                                change_percent = price_update['change_percent']
+                                if abs(change_percent) > 5.0:
+                                    logger.info(f"Significant price movement: Asset {asset_id} "
+                                              f"changed {change_percent:.2f}% to ${new_price}")
+                            
+            except Exception as e:
+                tick_results['errors'].append(f"Price update error: {e}")
             
             # 2. Execute pending orders
             try:
@@ -956,6 +976,219 @@ class MarketEngineManager:
         except Exception as e:
             logger.error(f"Failed to get active assets: {e}")
             return []
+
+    def simulate_market_event_impact(self, asset_id: int, event_type: str, severity: float = 1.0) -> bool:
+        """
+        Simulate the impact of a market event on an asset price.
+        
+        Args:
+            asset_id: ID of the asset to affect
+            event_type: Type of market event (e.g., 'market_crash', 'earnings_beat')
+            severity: Severity multiplier for the event (0.1 to 3.0)
+        
+        Returns:
+            bool: True if event was successfully applied
+        """
+        try:
+            with self.get_db_session() as db:
+                db_service = DatabaseService(db)
+                asset = db_service.get_asset(asset_id)
+                
+                if not asset:
+                    logger.error(f"Asset {asset_id} not found for market event")
+                    return False
+                
+                # Extract current price within session and convert to Decimal
+                current_price = Decimal(str(asset.current_price))
+                
+                # Import the market event simulation function
+                from ..random_walk import simulate_market_event
+                
+                # Calculate new price based on event
+                new_price = simulate_market_event(
+                    asset_id=asset_id,
+                    current_price=current_price,
+                    event_type=event_type,
+                    severity=severity
+                )
+                
+                # Update the asset price
+                success = self.update_asset_price(asset_id, new_price)
+                
+                if success:
+                    logger.info(f"Market event '{event_type}' applied to asset {asset_id}: "
+                              f"${current_price} -> ${new_price} (severity: {severity})")
+                    
+                    # Create market event record
+                    from core.schemas import MarketEventCreate
+                    from core.models import EventType
+                    
+                    event_data = MarketEventCreate(
+                        event_type=EventType.MARKET_CRASH,  # Default to market crash for now
+                        title=f"{event_type.title()} Event",
+                        description=f"Market event '{event_type}' affected asset pricing",
+                        price_impact=((new_price - current_price) / current_price),
+                        affected_assets=[asset.symbol],
+                        volatility_multiplier=Decimal(str(severity))
+                    )
+                    
+                    self.create_market_event(event_data)
+                
+                return success
+                
+        except Exception as e:
+            logger.error(f"Failed to simulate market event: {e}")
+            return False
+
+    def update_asset_prices_batch(self, asset_updates: List[Dict[str, Any]]) -> int:
+        """
+        Update multiple asset prices in a batch operation using enhanced random walk.
+        
+        Args:
+            asset_updates: List of dicts with 'asset_id', 'current_price', 'asset_type', 'volume'
+        
+        Returns:
+            int: Number of successfully updated assets
+        """
+        updated_count = 0
+        
+        try:
+            for update_data in asset_updates:
+                asset_id = update_data.get('asset_id')
+                current_price = update_data.get('current_price')
+                asset_type = update_data.get('asset_type')
+                volume = update_data.get('volume')
+                
+                # Validate required fields
+                if asset_id is None or current_price is None or asset_type is None:
+                    continue
+                
+                # Ensure asset_id can be converted to int
+                try:
+                    asset_id_int = int(asset_id)
+                except (ValueError, TypeError):
+                    logger.warning(f"Invalid asset_id format: {asset_id}")
+                    continue
+                
+                # Use enhanced random walk for price simulation
+                price_update = simulate_asset_price_update(
+                    asset_id=asset_id_int,
+                    current_price=Decimal(str(current_price)),
+                    asset_type=str(asset_type),
+                    volume=Decimal(str(volume)) if volume else None
+                )
+                
+                new_price = price_update['new_price']
+                generated_volume = price_update['volume_generated']
+                
+                # Update the asset
+                if self.update_asset_price(asset_id_int, new_price, generated_volume):
+                    updated_count += 1
+                    
+        except Exception as e:
+            logger.error(f"Batch price update error: {e}")
+            
+        return updated_count
+
+    def get_market_volatility_summary(self) -> Dict[str, Any]:
+        """
+        Get a summary of current market volatility across different asset types.
+        
+        Returns:
+            Dict with volatility metrics per asset type
+        """
+        try:
+            with self.get_db_session() as db:
+                assets = self.get_active_assets()
+                
+                volatility_summary = {}
+                asset_type_groups = {}
+                
+                # Group assets by type
+                for asset in assets:
+                    asset_type = str(asset.asset_type.value) if hasattr(asset.asset_type, 'value') else str(asset.asset_type)
+                    
+                    if asset_type not in asset_type_groups:
+                        asset_type_groups[asset_type] = []
+                    
+                    asset_type_groups[asset_type].append(asset)
+                
+                # Calculate volatility metrics for each type
+                for asset_type, type_assets in asset_type_groups.items():
+                    if not type_assets:
+                        continue
+                    
+                    # Get recent price history to calculate realized volatility
+                    total_volatility = 0
+                    count = 0
+                    
+                    for asset in type_assets:
+                        asset_id = getattr(asset, 'id', None)
+                        if asset_id:
+                            price_history = self.get_asset_price_history(asset_id, days=7)
+                            
+                            if len(price_history) > 1:
+                                # Calculate simple volatility from price changes
+                                prices = [float(p.price) for p in price_history]
+                                returns = [(prices[i] - prices[i-1]) / prices[i-1] for i in range(1, len(prices))]
+                                
+                                if returns:
+                                    volatility = math.sqrt(sum(r*r for r in returns) / len(returns))
+                                    total_volatility += volatility
+                                    count += 1
+                    
+                    avg_volatility = total_volatility / count if count > 0 else 0
+                    
+                    volatility_summary[asset_type] = {
+                        'average_volatility': round(avg_volatility, 4),
+                        'asset_count': len(type_assets),
+                        'theoretical_volatility': EnhancedRandomWalk().get_asset_volatility(asset_type)
+                    }
+                
+                return {
+                    'timestamp': datetime.utcnow().isoformat(),
+                    'volatility_by_type': volatility_summary,
+                    'market_stress_indicator': self._calculate_market_stress(volatility_summary)
+                }
+                
+        except Exception as e:
+            logger.error(f"Failed to get volatility summary: {e}")
+            return {}
+
+    def _calculate_market_stress(self, volatility_summary: Dict[str, Any]) -> str:
+        """Calculate overall market stress level based on volatility."""
+        try:
+            if not volatility_summary:
+                return "unknown"
+            
+            # Calculate weighted average volatility
+            total_weight = 0
+            weighted_volatility = 0
+            
+            for asset_type, metrics in volatility_summary.items():
+                volatility = metrics.get('average_volatility', 0)
+                count = metrics.get('asset_count', 0)
+                
+                weighted_volatility += volatility * count
+                total_weight += count
+            
+            if total_weight == 0:
+                return "low"
+            
+            avg_volatility = weighted_volatility / total_weight
+            
+            # Classify stress level
+            if avg_volatility < 0.02:
+                return "low"
+            elif avg_volatility < 0.05:
+                return "moderate"
+            elif avg_volatility < 0.08:
+                return "high"
+            else:
+                return "extreme"
+                
+        except Exception:
+            return "unknown"
 
     # ...existing code...
 
